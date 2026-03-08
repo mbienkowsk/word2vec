@@ -24,6 +24,10 @@ class PreprocessingConfig:
     # preprocess even if there is a processed copy in PROCESSED_DATA_DIR
     force_preprocess: bool
 
+    # size of the unigram table for negative sampling
+    # https://github.com/chrisjmccormick/word2vec_commented/blob/master/word2vec.c#L133
+    unigram_table_size: int
+
 
 @dataclass
 class TrainingConfig:

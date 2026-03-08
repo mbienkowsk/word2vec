@@ -29,7 +29,7 @@ class ProcessedDataset:
     corpus: np.ndarray
     word_counts: dict[str, int]
     vocab: list[str]
-    neg_sampling_distribution: np.ndarray
+    unigram_table: np.ndarray
     total_tokens: int
     word_to_idx: dict[str, int]
 
@@ -81,12 +81,17 @@ def preprocess_dataset(cfg: Word2VecConfig) -> ProcessedDataset:
     counts = np.array([word_counts_filtered[word] for word in processed_vocab])
     weights = counts**cfg.preprocessing.neg_sampling_dist_exponent
     neg_sampling_distribution = weights / weights.sum()
+    unigram_table = np.random.choice(
+        len(processed_vocab),
+        size=cfg.preprocessing.unigram_table_size,
+        p=neg_sampling_distribution,
+    ).astype(np.int32)
 
     dataset = ProcessedDataset(
         processed_corpus,
         word_counts_filtered,
         processed_vocab,
-        neg_sampling_distribution,
+        unigram_table,
         num_tokens,
         word_to_idx,
     )

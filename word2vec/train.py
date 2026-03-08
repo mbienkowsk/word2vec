@@ -11,22 +11,6 @@ from word2vec.config.schema import Word2VecConfig
 from word2vec.dataset import preprocess_dataset
 
 
-def sample_negatives(
-    rng: np.random.Generator,
-    n: int,
-    center_idx: int,
-    context_idx: int,
-    probs: np.ndarray,
-) -> np.ndarray:
-    """Sample negatives, ensuring that they are not the center or context word."""
-    negatives = []
-    while len(negatives) < n:
-        w = rng.choice(len(probs), p=probs)
-        if w != center_idx and w != context_idx:
-            negatives.append(w)
-    return np.array(negatives, dtype=np.int32)
-
-
 def sigmoid(x: np.ndarray) -> np.ndarray:
     return 1 / (1 + np.exp(-x))
 
@@ -91,6 +75,7 @@ def training_loop(cfg: Word2VecConfig):
     n_negative_samples = cfg.training.num_negative_samples
     max_window_size = cfg.training.max_neighbourhood_size
     total_tokens = dataset.total_tokens
+    unigram_table = dataset.unigram_table
 
     for epoch in tqdm(range(epochs), "Epochs"):
         for center_corpus_idx, center_vocab_idx in enumerate(dataset.corpus):
@@ -117,14 +102,10 @@ def training_loop(cfg: Word2VecConfig):
                     continue
 
                 context_vocab_idx = dataset.corpus[context_idx]
+                negative_samples = unigram_table[
+                    rng.integers(0, len(unigram_table), n_negative_samples)
+                ]
 
-                negative_samples = sample_negatives(
-                    rng,
-                    n_negative_samples,
-                    center_vocab_idx,
-                    context_vocab_idx,
-                    dataset.neg_sampling_distribution,
-                )
                 # TODO: subsampling
                 # TODO: update derivation doc to derive for neg log
 
@@ -146,3 +127,9 @@ def training_loop(cfg: Word2VecConfig):
                 W_in[center_vocab_idx] -= lr * (g_neg @ v_out_neg)
                 # g_neg[i] * v_in for i in range(k))
                 W_out[negative_samples] -= lr * np.outer(g_neg, v_in)
+
+    return Word2VecModel(
+        vocab=dataset.vocab,
+        word_to_idx=dataset.word_to_idx,
+        embeddings=W_in,
+    )
