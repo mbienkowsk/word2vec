@@ -32,6 +32,7 @@ class ProcessedDataset:
     unigram_table: np.ndarray
     total_tokens: int
     word_to_idx: dict[str, int]
+    subsampling_proba: np.ndarray
 
 
 def processed_dataset_path(dataset: Dataset):
@@ -87,6 +88,9 @@ def preprocess_dataset(cfg: Word2VecConfig) -> ProcessedDataset:
         p=neg_sampling_distribution,
     ).astype(np.int32)
 
+    dist = counts / counts.sum()
+    subsampling_proba = 1 - np.sqrt(cfg.preprocessing.subsampling_threshold / dist)
+
     dataset = ProcessedDataset(
         processed_corpus,
         word_counts_filtered,
@@ -94,6 +98,7 @@ def preprocess_dataset(cfg: Word2VecConfig) -> ProcessedDataset:
         unigram_table,
         num_tokens,
         word_to_idx,
+        subsampling_proba,
     )
 
     with open(processed_dataset_path(cfg.dataset), "wb") as f:

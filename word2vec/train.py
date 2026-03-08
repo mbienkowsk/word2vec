@@ -76,10 +76,11 @@ def training_loop(cfg: Word2VecConfig):
     max_window_size = cfg.training.max_neighbourhood_size
     total_tokens = dataset.total_tokens
     unigram_table = dataset.unigram_table
+    subsampling_proba = dataset.subsampling_proba
 
     for epoch in tqdm(range(epochs), "Epochs"):
         for center_corpus_idx, center_vocab_idx in enumerate(dataset.corpus):
-            # https://github.com/chrisjmccormick/word2vec_commented/blob/master/word2vec.c#L840C6-L846C6
+            # https://github.com/chrisjmccormick/word2vec_commented/blob/master/word2vec.c#L840-L846
             progress = center_corpus_idx / (epochs * total_tokens)
             lr = lr_start * (1 - progress)
             lr = max(lr, 0.0001 * lr_start)
@@ -88,6 +89,11 @@ def training_loop(cfg: Word2VecConfig):
                 logger.info(
                     f"Epoch {epoch}, token {center_corpus_idx}/{total_tokens}, lr {lr:.6f}"
                 )
+
+            # https://github.com/chrisjmccormick/word2vec_commented/blob/master/word2vec.c#L905
+            # this should be at the start of the loop for max speedup, but it messes up my logs
+            if rng.random() < subsampling_proba[center_vocab_idx]:
+                continue
 
             # random window size
             window = rng.integers(1, max_window_size + 1)
@@ -106,7 +112,6 @@ def training_loop(cfg: Word2VecConfig):
                     rng.integers(0, len(unigram_table), n_negative_samples)
                 ]
 
-                # TODO: subsampling
                 # TODO: update derivation doc to derive for neg log
 
                 # positive example update

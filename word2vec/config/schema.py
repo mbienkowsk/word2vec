@@ -28,6 +28,9 @@ class PreprocessingConfig:
     # https://github.com/chrisjmccormick/word2vec_commented/blob/master/word2vec.c#L133
     unigram_table_size: int
 
+    # while this is technically a training hyperparam, it's used to calculate the proba table for subsampling, so it makes more sense to put it here
+    subsampling_threshold: float
+
 
 @dataclass
 class TrainingConfig:
@@ -37,7 +40,6 @@ class TrainingConfig:
     lr_start: float
     num_epochs: int
     seed: int
-    subsampling_threshold: float
     force_train: bool
 
 
