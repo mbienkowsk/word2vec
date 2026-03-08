@@ -9,7 +9,7 @@ class Dataset(str, Enum):
 
 
 class Stage(str, Enum):
-    download_dataset = "download_dataset"
+    train = "train"
 
 
 @dataclass

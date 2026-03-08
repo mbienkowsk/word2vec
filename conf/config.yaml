@@ -1,2 +1,2 @@
 dataset: text8
-stage: download_dataset
+stage: train
