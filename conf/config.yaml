@@ -1,2 +1,7 @@
 dataset: text8
-stage: train
+stage: preprocess
+
+preprocessing:
+  neg_sampling_dist_exponent: 0.75
+  min_token_corpus_count: 5
+  force_preprocess: false

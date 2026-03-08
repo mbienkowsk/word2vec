@@ -10,12 +10,26 @@ class Dataset(str, Enum):
 
 class Stage(str, Enum):
     train = "train"
+    preprocess = "preprocess"
+
+
+@dataclass
+class PreprocessingConfig:
+    # exponent for the unigram distribution for negative sampling
+    neg_sampling_dist_exponent: float
+
+    # tokens with count < min_count get filtered out
+    min_token_corpus_count: int
+
+    # preprocess even if there is a processed copy in PROCESSED_DATA_DIR
+    force_preprocess: bool
 
 
 @dataclass
 class Word2VecConfig:
     dataset: Dataset
     stage: Stage
+    preprocessing: PreprocessingConfig
 
 
 def register_configs():
