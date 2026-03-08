@@ -79,7 +79,9 @@ def preprocess_dataset(cfg: Word2VecConfig) -> ProcessedDataset:
     logger.info(f"Number of words after filtering: {num_tokens}")
 
     # compute negative sampling distribution
-    counts = np.array([word_counts_filtered[word] for word in processed_vocab])
+    counts = np.array(
+        [word_counts_filtered[word] for word in processed_vocab], dtype=np.float32
+    )
     weights = counts**cfg.preprocessing.neg_sampling_dist_exponent
     neg_sampling_distribution = weights / weights.sum()
     unigram_table = np.random.choice(
@@ -89,7 +91,9 @@ def preprocess_dataset(cfg: Word2VecConfig) -> ProcessedDataset:
     ).astype(np.int32)
 
     dist = counts / counts.sum()
-    subsampling_proba = 1 - np.sqrt(cfg.preprocessing.subsampling_threshold / dist)
+    subsampling_proba = (
+        1 - np.sqrt(cfg.preprocessing.subsampling_threshold / dist)
+    ).astype(np.float32)
 
     dataset = ProcessedDataset(
         processed_corpus,

@@ -67,8 +67,12 @@ def training_loop(cfg: Word2VecConfig):
     vocab_size = len(dataset.vocab)
 
     # https://github.com/chrisjmccormick/word2vec_commented/blob/master/word2vec.c#L773
-    W_in = rng.uniform(-0.5 / d, 0.5 / d, vocab_size * d).reshape((vocab_size, d))
-    W_out = np.zeros((vocab_size, d))
+    W_in = (
+        rng.uniform(-0.5 / d, 0.5 / d, vocab_size * d)
+        .reshape((vocab_size, d))
+        .astype(np.float32)
+    )
+    W_out = np.zeros((vocab_size, d)).astype(np.float32)
 
     epochs = cfg.training.num_epochs
     lr_start = cfg.training.lr_start
@@ -85,7 +89,7 @@ def training_loop(cfg: Word2VecConfig):
             lr = lr_start * (1 - progress)
             lr = max(lr, 0.0001 * lr_start)
 
-            if center_corpus_idx % 10000 == 0:
+            if center_corpus_idx % 100_000 == 0:
                 logger.info(
                     f"Epoch {epoch}, token {center_corpus_idx}/{total_tokens}, lr {lr:.6f}"
                 )
