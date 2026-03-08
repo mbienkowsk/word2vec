@@ -26,7 +26,7 @@ def get_raw_dataset(dataset: Dataset):
 
 @dataclass
 class ProcessedDataset:
-    corpus: list[str]
+    corpus: np.ndarray
     word_counts: dict[str, int]
     vocab: list[str]
     neg_sampling_distribution: np.ndarray
@@ -64,8 +64,12 @@ def preprocess_dataset(cfg: Word2VecConfig) -> ProcessedDataset:
     logger.info(f"Vocab size after filtering: {len(word_counts_filtered)}")
 
     # rebuild corpus & vocab
-    processed_corpus = [word for word in raw if word in word_counts_filtered]
     processed_vocab = list(word_counts_filtered.keys())
+    word_to_idx = {word: idx for idx, word in enumerate(processed_vocab)}
+    processed_corpus = np.array(
+        [word_to_idx[word] for word in raw if word in word_counts_filtered],
+        dtype=np.int32,
+    )
 
     num_tokens = len(processed_corpus)
     assert num_tokens == sum(word_counts_filtered.values())
@@ -74,15 +78,9 @@ def preprocess_dataset(cfg: Word2VecConfig) -> ProcessedDataset:
     logger.info(f"Number of words after filtering: {num_tokens}")
 
     # compute negative sampling distribution
-    weights = np.array(
-        [
-            word_counts_filtered[word] ** cfg.preprocessing.neg_sampling_dist_exponent
-            for word in processed_vocab
-        ]
-    )
+    counts = np.array([word_counts_filtered[word] for word in processed_vocab])
+    weights = counts**cfg.preprocessing.neg_sampling_dist_exponent
     neg_sampling_distribution = weights / weights.sum()
-
-    word_to_idx = {word: idx for idx, word in enumerate(processed_vocab)}
 
     dataset = ProcessedDataset(
         processed_corpus,
