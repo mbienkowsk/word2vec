@@ -26,10 +26,23 @@ class PreprocessingConfig:
 
 
 @dataclass
+class TrainingConfig:
+    max_neighbourhood_size: int
+    latent_dimensionality: int
+    num_negative_samples: int
+    lr_start: float
+    num_epochs: int
+    seed: int
+    subsampling_threshold: float
+    force_train: bool
+
+
+@dataclass
 class Word2VecConfig:
     dataset: Dataset
     stage: Stage
     preprocessing: PreprocessingConfig
+    training: TrainingConfig
 
 
 def register_configs():

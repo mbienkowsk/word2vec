@@ -5,3 +5,13 @@ preprocessing:
   neg_sampling_dist_exponent: 0.75
   min_token_corpus_count: 5
   force_preprocess: false
+
+training:
+  max_neighbourhood_size: 3
+  latent_dimensionality: 100
+  num_negative_samples: 5
+  lr_start: 0.01
+  num_epochs: 3
+  seed: 42
+  subsampling_threshold: 1e-5
+  force_train: false
