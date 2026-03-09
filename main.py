@@ -6,6 +6,7 @@ from omegaconf import OmegaConf
 
 from word2vec.config.schema import Stage, Word2VecConfig, register_configs
 from word2vec.dataset import preprocess_dataset
+from word2vec.debug import debug
 from word2vec.eval import eval
 from word2vec.train import train_or_load
 
@@ -15,6 +16,7 @@ stage_to_fn: dict[Stage, Callable[[Word2VecConfig], Any]] = {
     Stage.train: train_or_load,
     Stage.preprocess: preprocess_dataset,
     Stage.eval: eval,
+    Stage.debug: debug,
 }
 
 

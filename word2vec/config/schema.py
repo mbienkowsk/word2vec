@@ -13,6 +13,7 @@ class Stage(str, Enum):
     train = "train"
     preprocess = "preprocess"
     eval = "eval"
+    debug = "debug"
 
 
 @dataclass
