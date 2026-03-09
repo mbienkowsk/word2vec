@@ -37,7 +37,6 @@ def eval_simlex(model: Word2VecModel):
     sims = np.zeros(len(dataset))
 
     for i, row in dataset.iterrows():
-        print(row)
         word_1, word_2 = row["word1"], row["word2"]
         if word_1 not in model.word_to_idx or word_2 not in model.word_to_idx:
             present[i] = False

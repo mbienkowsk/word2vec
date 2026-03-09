@@ -50,14 +50,16 @@ class Word2VecModel:
         with open(path, "wb") as f:
             pickle.dump(self, f)
 
-    def knn(self, word, k=5):
+    def knn(self, word: str, k: int = 5):
         idx = self.word_to_idx[word]
         q = self.emb_norm[idx]
+        return self.knn_for_emb(q, k)
 
+    def knn_for_emb(self, q: np.ndarray, k: int = 5):
         sims = self.emb_norm @ q
         top = np.argpartition(-sims, k + 1)[: k + 1]
-
-        top = top[top != idx]  # remove self
+        # filter out q itself if present
+        top = top[np.abs(sims[top] - 1) > 1e-5]
         top = top[np.argsort(-sims[top])]
 
         return [(self.vocab[i], sims[i]) for i in top[:k]]

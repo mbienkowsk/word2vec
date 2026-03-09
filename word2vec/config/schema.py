@@ -14,6 +14,7 @@ class Stage(str, Enum):
     preprocess = "preprocess"
     eval = "eval"
     debug = "debug"
+    arithmetic = "arithmetic"
 
 
 @dataclass
@@ -53,6 +54,11 @@ class TrainingConfig:
 
 
 @dataclass
+class ArithmeticConfig:
+    patterns: list[str]
+
+
+@dataclass
 class DebugConfig:
     knn_words: list[str]
 
@@ -65,6 +71,7 @@ class Word2VecConfig:
     training: TrainingConfig
     eval: EvalConfig
     debug: DebugConfig
+    arithmetic: ArithmeticConfig
 
 
 def register_configs():

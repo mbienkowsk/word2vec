@@ -28,3 +28,13 @@ debug:
     - fruit
     - guitar
     - happiness
+
+arithmetic:
+  patterns:
+    - king,man,woman,queen
+    - paris,france,italy,rome
+    - walking,walk,swim,swimming
+    - big,bigger,small,smaller
+    - cat,kitten,puppy,dog
+    - banana,yellow,red,apple
+    - teacher,school,hospital,doctor

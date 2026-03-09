@@ -2,7 +2,13 @@ import numpy as np
 
 from word2vec.config.schema import Word2VecConfig
 from word2vec.dataset import preprocess_dataset
-from word2vec.model import load_model_for_config
+from word2vec.model import Word2VecModel, load_model_for_config
+
+
+def display_knn_results(model: Word2VecModel, q: str, results: list[tuple[str, float]]):
+    print(f"\nTop 5 nearest neighbors for {q}:")
+    for idx, (word, sim) in enumerate(results, start=1):
+        print(f"{idx}. {word}: {sim:.4f}")
 
 
 def debug(cfg: Word2VecConfig):
@@ -11,10 +17,8 @@ def debug(cfg: Word2VecConfig):
     assert model is not None
 
     for word in cfg.debug.knn_words:
-        print(f"\nTop 5 nearest neighbors for '{word}':")
         knn_result = model.knn(word)
-        for idx, neighbor in enumerate(knn_result, 1):
-            print(f"  {idx}. {neighbor}")
+        display_knn_results(model, word, knn_result)
 
     emb_norms = np.linalg.norm(model.embeddings, axis=1)
     print(
