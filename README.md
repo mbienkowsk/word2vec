@@ -90,7 +90,7 @@ arithmetic:
 ```
 
 
-Every hyperparameter is configurable in `config.yaml`. If you want to play around with a pretrained model, you can pull the benchmarked below instance using git lfs. Every script from `evaluation/` tries to load a model that conforms to the configuration from config.yaml and fails if it's not in `models/`. If you want to play around with the params and train your instance, customize the yaml and run `just train`.
+Every hyperparameter is configurable in `config.yaml`. If you want to play around with a pretrained model, you can pull the benchmarked below instance using git lfs. Every script from `evaluation/` tries to load a model that conforms to the configuration from config.yaml and fails if it's not in `models/`. If you want to play around with the params and train your instance, customize the yaml and run `just train`. You can also view the results of the experiments in the form of a notebook in `notebooks/demo.ipynb`.
 
 There is a single entrypoint to the repo, the actual script/stage to run is parametrized with the `stage` parameter, which you can override via the command line. However, it's simpler to use the predefined Justfile commands (see `just --list`). Note that each script has corresponding settings in `config.yaml` that you might want to tweak.
 
