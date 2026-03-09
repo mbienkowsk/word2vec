@@ -45,9 +45,8 @@ def processed_dataset_path(dataset: Dataset):
 
 def preprocess_dataset(cfg: Word2VecConfig) -> ProcessedDataset:
     if (
-        not cfg.preprocessing.force_preprocess
-        and (path := processed_dataset_path(cfg.dataset)).exists()
-    ):
+        path := processed_dataset_path(cfg.dataset)
+    ).exists() and not cfg.preprocessing.force_preprocess:
         logger.info(f"Processed dataset {cfg.dataset} found, loading from disk")
         with open(path, "rb") as f:
             return cast(ProcessedDataset, pickle.load(f))

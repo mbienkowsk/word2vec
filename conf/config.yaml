@@ -17,11 +17,11 @@ training:
   seed: 42
   force_train: false
 
-eval:
+benchmark:
   dataset: simlex999
 
-debug:
-  knn_words:
+knn:
+  words:
     - pasta
     - four
     - ronald
@@ -34,7 +34,7 @@ arithmetic:
     - king,man,woman,queen
     - paris,france,italy,rome
     - walking,walk,swim,swimming
-    - big,bigger,small,smaller
+    - biggest,big,small,smallest
     - cat,kitten,puppy,dog
     - banana,yellow,red,apple
     - teacher,school,hospital,doctor

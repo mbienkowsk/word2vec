@@ -12,8 +12,8 @@ class Dataset(str, Enum):
 class Stage(str, Enum):
     train = "train"
     preprocess = "preprocess"
-    eval = "eval"
-    debug = "debug"
+    benchmark = "benchmark"
+    knn = "knn"
     arithmetic = "arithmetic"
 
 
@@ -37,7 +37,7 @@ class PreprocessingConfig:
 
 
 @dataclass
-class EvalConfig:
+class BenchmarkConfig:
     # even though we can't use every dataset, e.g. text8 to eval, this is just simpler
     dataset: Dataset
 
@@ -59,8 +59,8 @@ class ArithmeticConfig:
 
 
 @dataclass
-class DebugConfig:
-    knn_words: list[str]
+class KnnConfig:
+    words: list[str]
 
 
 @dataclass
@@ -69,8 +69,8 @@ class Word2VecConfig:
     stage: Stage
     preprocessing: PreprocessingConfig
     training: TrainingConfig
-    eval: EvalConfig
-    debug: DebugConfig
+    benchmark: BenchmarkConfig
+    knn: KnnConfig
     arithmetic: ArithmeticConfig
 
 

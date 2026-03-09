@@ -1,16 +1,29 @@
+# initialize the venv
 init:
   uv sync
 
+# Preprocess the dataset
 preprocess:
   uv run -m main stage=preprocess
 
-debug:
-  uv run -m main stage=debug
-
+# Train a model
 train:
   uv run -m main stage=train training.force_train=True
 
-eval:
-  uv run -m main stage=eval
+# Run demo knn queries
+knn:
+  uv run -m main stage=knn
 
-all: init preprocess train
+# Demo of embedding arithmetic, e.g. smallest-small+big=biggest
+arithmetic:
+  uv run -m main stage=arithmetic
+
+# Benchmark a model on simlex-999
+benchmark:
+  uv run -m main stage=benchmark
+
+types:
+  uvx ty check
+
+lint:
+  ruff check

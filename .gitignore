@@ -12,3 +12,4 @@ wheels/
 !data/processed/.gitkeep
 !data/raw/.gitkeep
 data
+.ipynb_checkpoints

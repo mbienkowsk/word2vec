@@ -1,4 +1,7 @@
+import sys
+
 import numpy as np
+from loguru import logger
 
 from word2vec.config.schema import Word2VecConfig
 from word2vec.model import load_model_for_config
@@ -6,7 +9,9 @@ from word2vec.model import load_model_for_config
 
 def test_arithmetic_operations(cfg: Word2VecConfig):
     model = load_model_for_config(cfg)
-    assert model is not None
+    if model is None:
+        logger.error("Model file missing, train it first or change the configuration.")
+        sys.exit(1)
 
     for pattern in cfg.arithmetic.patterns:
         try:

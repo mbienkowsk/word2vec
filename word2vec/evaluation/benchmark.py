@@ -1,3 +1,5 @@
+import logging
+import sys
 from dataclasses import dataclass
 from typing import Any, Callable, cast
 
@@ -10,17 +12,20 @@ from word2vec.dataset import get_raw_dataset
 from word2vec.model import load_model_for_config
 from word2vec.train import Word2VecModel
 
+logging.getLogger("httpx").setLevel(logging.WARNING)
 
-def eval(cfg: Word2VecConfig):
-    dataset_to_eval_fn: Callable[[Word2VecModel], Any] = {
+
+def run_benchmark(cfg: Word2VecConfig):
+    dataset_to_eval_fn: dict[Dataset, Callable[[Word2VecModel], Any]] = {
         Dataset.simlex999: eval_simlex
     }
 
     model = load_model_for_config(cfg)
     if model is None:
-        raise RuntimeError("Train the model first or change the configuration.")
+        logger.error("Model file missing, train it first or change the configuration.")
+        sys.exit(1)
 
-    return dataset_to_eval_fn[cfg.eval.dataset](model)
+    return dataset_to_eval_fn[cfg.benchmark.dataset](model)
 
 
 @dataclass
@@ -39,10 +44,10 @@ def eval_simlex(model: Word2VecModel):
     for i, row in dataset.iterrows():
         word_1, word_2 = row["word1"], row["word2"]
         if word_1 not in model.word_to_idx or word_2 not in model.word_to_idx:
-            present[i] = False
+            present[i] = False  # ty: ignore
             continue
 
-        sims[i] = model.similarity(word_1, word_2)
+        sims[i] = model.similarity(word_1, word_2)  # ty: ignore
 
     dataset_sims_filtered = dataset["similarity"].to_numpy()[present]
     model_sims_filtered = sims[present]
@@ -56,5 +61,5 @@ def eval_simlex(model: Word2VecModel):
 
     res = SimlexResult(df["human"].corr(df["model"], method="spearman"), present.mean())
     logger.info(
-        f"Simlex999 benchmark results: coverage={res.coverage}, corr={res.correlation}"
+        f"Simlex999 benchmark results: coverage={round(res.coverage, 4)}, corr={round(res.correlation, 4)}"
     )
