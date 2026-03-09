@@ -10,10 +10,10 @@ preprocessing:
 
 training:
   max_neighbourhood_size: 5
-  latent_dimensionality: 50
-  num_negative_samples: 5
-  lr_start: 0.01
-  num_epochs: 3
+  latent_dimensionality: 300
+  num_negative_samples: 10
+  lr_start: 0.025
+  num_epochs: 5
   seed: 42
   force_train: false
 
