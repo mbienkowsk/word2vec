@@ -10,12 +10,22 @@ preprocessing:
 
 training:
   max_neighbourhood_size: 5
-  latent_dimensionality: 300
-  num_negative_samples: 10
+  latent_dimensionality: 50
+  num_negative_samples: 5
   lr_start: 0.025
-  num_epochs: 5
+  num_epochs: 1
   seed: 42
   force_train: false
 
 eval:
   dataset: simlex999
+
+debug:
+  knn_words:
+    - bad
+    - good
+    - peter
+    - griffin
+    - fire
+    - music
+    - one
