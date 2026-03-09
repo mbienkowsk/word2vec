@@ -1,6 +1,10 @@
+init:
+  uv sync
 
+debug:
+  uv run -m main stage=debug
 
-init: download_dataset
+train:
+  uv run -m main stage=train training.force_train=True
 
-download_dataset:
-  uv run -m word2vec.dataset
+init_train: init train

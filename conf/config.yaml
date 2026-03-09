@@ -9,11 +9,11 @@ preprocessing:
   subsampling_threshold: 1e-5
 
 training:
-  max_neighbourhood_size: 3
+  max_neighbourhood_size: 5
   latent_dimensionality: 50
-  num_negative_samples: 3
+  num_negative_samples: 5
   lr_start: 0.01
-  num_epochs: 1
+  num_epochs: 3
   seed: 42
   force_train: false
 
