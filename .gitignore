@@ -8,4 +8,7 @@ wheels/
 
 # Virtual environments
 .venv
-data/
+!data/.gitkeep
+!data/processed/.gitkeep
+!data/raw/.gitkeep
+data
