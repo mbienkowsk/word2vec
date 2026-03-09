@@ -1,4 +1,7 @@
 
+= Gradient derivation for log-loss
+In the code we minimize negative log-loss instead of maximizing this, so we add these during SGD.
+
 
 Derivative of sigmoid:
 $ d/( d x) sigma(x) = $
@@ -17,7 +20,7 @@ $ 1/(sigma(w dot w')) dot d/(d w) sigma(w dot w') = $
 $
   = ( 1/(sigma(w dot w')) ) dot (1 - sigma(w dot w')) dot sigma(w dot w') dot d/(d w) (w dot w') =
 $
-$ = (1 - sigma(w dot w')) dot w' = sigma(-w dot w') dot w' $
+$ = (1 - sigma(w dot w')) dot w' $
 
 Derivative of the log-loss negative term:
 $ d/(d w) log(sigma(-w dot w')) = $

@@ -83,8 +83,6 @@ def training_loop(cfg: Word2VecConfig):
                     rng.integers(0, len(unigram_table), n_negative_samples)
                 ]
 
-                # TODO: update derivation doc to derive for neg log
-
                 # positive example update
                 v_in = W_in[center_vocab_idx].copy()
                 v_out = W_out[context_vocab_idx]
