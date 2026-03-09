@@ -1,60 +1,23 @@
-import pickle
-from dataclasses import dataclass
-from pathlib import Path
-
 import numpy as np
 from loguru import logger
 from tqdm import tqdm
 
-from word2vec.config import MODELS_DIR
 from word2vec.config.schema import Word2VecConfig
 from word2vec.dataset import preprocess_dataset
+from word2vec.model import Word2VecModel, load_model_for_config, path_for_model_config
 
 
 def sigmoid(x: np.ndarray) -> np.ndarray:
     return 1 / (1 + np.exp(-x))
 
 
-def path_for_model_config(cfg: Word2VecConfig):
-    return (
-        MODELS_DIR
-        / f"{cfg.dataset}_d{cfg.training.latent_dimensionality}_k{cfg.training.num_negative_samples}_e{cfg.training.num_epochs}.pkl"
-    )
-
-
-@dataclass
-class Word2VecModel:
-    vocab: list[str]
-    word_to_idx: dict[str, int]
-    embeddings: np.ndarray
-
-    def embedding(self, word: str) -> np.ndarray:
-        idx = self.word_to_idx[word]
-        return self.embeddings[idx]
-
-    def similarity(self, word1: str, word2: str) -> float:
-        emb1 = self.embedding(word1)
-        emb2 = self.embedding(word2)
-        return np.dot(emb1, emb2) / (np.linalg.norm(emb1) * np.linalg.norm(emb2))
-
-    @staticmethod
-    def from_file(path: Path):
-        with open(path, "rb") as f:
-            return pickle.load(f)
-
-    def save(self, path: Path):
-        with open(path, "wb") as f:
-            pickle.dump(self, f)
-
-
 def train_or_load(cfg: Word2VecConfig):
-    path = path_for_model_config(cfg)
-    if path.exists() and not cfg.training.force_train:
-        logger.info(f"Model found at {path}, loading from disk")
-        return Word2VecModel.from_file(path)
+    if (model := load_model_for_config(cfg)) is not None:
+        return model
 
     logger.info("Training model...")
     model = training_loop(cfg)
+    path = path_for_model_config(cfg)
     model.save(path)
     logger.info(f"Model saved to {path}")
     return model

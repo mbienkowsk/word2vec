@@ -4,6 +4,7 @@ from dataclasses import dataclass
 from typing import cast
 
 import numpy as np
+from datasets import load_dataset
 from huggingface_hub import hf_hub_download
 from loguru import logger
 
@@ -14,14 +15,17 @@ from word2vec.config.schema import Dataset, Word2VecConfig
 def get_raw_dataset(dataset: Dataset):
     match dataset:
         case Dataset.text8:
-            path = hf_hub_download(
-                repo_id="roshbeed/text8-dataset",
-                filename="text8_full.txt",
-                cache_dir=RAW_DATA_DIR,
-            )
-
-    with open(path, "r") as f:
-        return f.read()
+            with open(
+                hf_hub_download(
+                    repo_id="roshbeed/text8-dataset",
+                    filename="text8_full.txt",
+                    cache_dir=RAW_DATA_DIR,
+                ),
+                "r",
+            ) as f:
+                return f.read()
+        case Dataset.simlex999:
+            return load_dataset("Yuti/SimLex-999")
 
 
 @dataclass

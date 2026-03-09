@@ -6,11 +6,13 @@ from hydra.core.config_store import ConfigStore
 
 class Dataset(str, Enum):
     text8 = "text8"
+    simlex999 = "simlex999"
 
 
 class Stage(str, Enum):
     train = "train"
     preprocess = "preprocess"
+    eval = "eval"
 
 
 @dataclass
@@ -33,6 +35,12 @@ class PreprocessingConfig:
 
 
 @dataclass
+class EvalConfig:
+    # even though we can't use every dataset, e.g. text8 to eval, this is just simpler
+    dataset: Dataset
+
+
+@dataclass
 class TrainingConfig:
     max_neighbourhood_size: int
     latent_dimensionality: int
@@ -49,6 +57,7 @@ class Word2VecConfig:
     stage: Stage
     preprocessing: PreprocessingConfig
     training: TrainingConfig
+    eval: EvalConfig
 
 
 def register_configs():
