@@ -3,12 +3,12 @@ from typing import Any, Callable
 import hydra
 from loguru import logger
 from omegaconf import OmegaConf
-
-from word2vec.arithmetic import test_arithmetic_operations
-from word2vec.config.schema import Stage, Word2VecConfig, register_configs
 from word2vec.dataset import preprocess_dataset
-from word2vec.debug import debug
-from word2vec.eval import eval
+
+from word2vec.config.schema import Stage, Word2VecConfig, register_configs
+from word2vec.evaluation.arithmetic import test_arithmetic_operations
+from word2vec.evaluation.debug import debug
+from word2vec.evaluation.eval import eval
 from word2vec.train import train_or_load
 
 register_configs()
