@@ -22,10 +22,9 @@ eval:
 
 debug:
   knn_words:
-    - bad
-    - good
-    - peter
-    - griffin
-    - fire
-    - music
-    - one
+    - pasta
+    - four
+    - ronald
+    - fruit
+    - guitar
+    - happiness

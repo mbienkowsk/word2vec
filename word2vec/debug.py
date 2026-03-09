@@ -10,7 +10,7 @@ def debug(cfg: Word2VecConfig):
     model = load_model_for_config(cfg)
     assert model is not None
 
-    for word in ["bad", "good", "fire", "music", "nine"]:
+    for word in cfg.debug.knn_words:
         print(f"\nTop 5 nearest neighbors for '{word}':")
         knn_result = model.knn(word)
         for idx, neighbor in enumerate(knn_result, 1):
@@ -20,9 +20,6 @@ def debug(cfg: Word2VecConfig):
     print(
         f"\nEmbedding norms: mean={emb_norms.mean():.4f}, std={emb_norms.std():.4f}, min={emb_norms.min():.4f}, max={emb_norms.max():.4f}"
     )
-
-    emb_vars = np.var(model.embeddings, axis=0)
-    print(f"Embedding variances (sorted): {np.sort(emb_vars)}")
 
     dataset = preprocess_dataset(cfg)
     subsampling = dataset.subsampling_proba

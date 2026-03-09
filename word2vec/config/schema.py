@@ -53,12 +53,18 @@ class TrainingConfig:
 
 
 @dataclass
+class DebugConfig:
+    knn_words: list[str]
+
+
+@dataclass
 class Word2VecConfig:
     dataset: Dataset
     stage: Stage
     preprocessing: PreprocessingConfig
     training: TrainingConfig
     eval: EvalConfig
+    debug: DebugConfig
 
 
 def register_configs():
