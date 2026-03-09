@@ -95,8 +95,8 @@ def preprocess_dataset(cfg: Word2VecConfig) -> ProcessedDataset:
     ).astype(np.int32)
 
     dist = counts / counts.sum()
-    subsampling_proba = (
-        1 - np.sqrt(cfg.preprocessing.subsampling_threshold / dist)
+    subsampling_proba = np.maximum(
+        0, 1 - np.sqrt(cfg.preprocessing.subsampling_threshold / dist)
     ).astype(np.float32)
 
     dataset = ProcessedDataset(

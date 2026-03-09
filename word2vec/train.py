@@ -12,7 +12,9 @@ def sigmoid(x: np.ndarray) -> np.ndarray:
 
 
 def train_or_load(cfg: Word2VecConfig):
-    if (model := load_model_for_config(cfg)) is not None:
+    if (
+        model := load_model_for_config(cfg)
+    ) is not None and not cfg.training.force_train:
         return model
 
     logger.info("Training model...")
@@ -48,7 +50,9 @@ def training_loop(cfg: Word2VecConfig):
     for epoch in tqdm(range(epochs), "Epochs"):
         for center_corpus_idx, center_vocab_idx in enumerate(dataset.corpus):
             # https://github.com/chrisjmccormick/word2vec_commented/blob/master/word2vec.c#L840-L846
-            progress = center_corpus_idx / (epochs * total_tokens)
+            progress = (epoch * total_tokens + center_corpus_idx) / (
+                epochs * total_tokens
+            )
             lr = lr_start * (1 - progress)
             lr = max(lr, 0.0001 * lr_start)
 
@@ -84,6 +88,7 @@ def training_loop(cfg: Word2VecConfig):
                 # positive example update
                 v_in = W_in[center_vocab_idx].copy()
                 v_out = W_out[context_vocab_idx]
+
                 score_pos = v_in @ v_out
                 g_pos = sigmoid(score_pos) - 1
 
@@ -104,4 +109,5 @@ def training_loop(cfg: Word2VecConfig):
         vocab=dataset.vocab,
         word_to_idx=dataset.word_to_idx,
         embeddings=W_in,
+        emb_norm=W_in / np.linalg.norm(W_in, axis=1, keepdims=True),
     )

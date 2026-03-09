@@ -17,7 +17,7 @@ def path_for_model_config(cfg: Word2VecConfig):
 
 
 def load_model_for_config(cfg: Word2VecConfig):
-    if (path := path_for_model_config(cfg)).exists:
+    if (path := path_for_model_config(cfg)).exists():
         logger.info(f"Model found at {path}, loading from disk")
         return Word2VecModel.from_file(path)
 
@@ -30,6 +30,7 @@ class Word2VecModel:
     vocab: list[str]
     word_to_idx: dict[str, int]
     embeddings: np.ndarray
+    emb_norm: np.ndarray
 
     def embedding(self, word: str) -> np.ndarray:
         idx = self.word_to_idx[word]
@@ -48,3 +49,15 @@ class Word2VecModel:
     def save(self, path: Path):
         with open(path, "wb") as f:
             pickle.dump(self, f)
+
+    def knn(self, word, k=5):
+        idx = self.word_to_idx[word]
+        q = self.emb_norm[idx]
+
+        sims = self.emb_norm @ q
+        top = np.argpartition(-sims, k + 1)[: k + 1]
+
+        top = top[top != idx]  # remove self
+        top = top[np.argsort(-sims[top])]
+
+        return [(self.vocab[i], sims[i]) for i in top[:k]]
